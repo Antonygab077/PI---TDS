@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuidar — Variante 6: Híbrida Dark Petróleo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* paleta original (azul petróleo + verde), invertida para fundo escuro */
+    --bg: #0F1E21;
+    --surface: #16282C;
+    --surface-2: #1D3338;
+    --ink: #EAF3F2;
+    --ink-soft: #C3DAD8;
+    --muted: #93B0AE;
+    --line: #27403F;
+    --primary: #5BAFC4;        /* azul petróleo clareado p/ contraste no escuro */
+    --primary-deep: #2D6E7E;   /* azul petróleo original, usado em fills/sombras */
+    --primary-tint: rgba(91,175,196,0.12);
+    --green: #6FCBA0;          /* verde original clareado p/ contraste */
+    --green-deep: #5FAD8C;
+    --green-tint: rgba(111,203,160,0.12);
+    --amber: #E8A23D;
+    --amber-tint: rgba(232,162,61,0.12);
+    --radius-lg: 22px;
+    --radius-md: 16px;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family:'Inter', sans-serif;
+    background:#081316;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,.display{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; }
+  .num{ font-feature-settings:"tnum"; font-variant-numeric: tabular-nums; }
+
+  .gallery{ display:flex; flex-wrap:wrap; gap:36px; padding:48px; justify-content:center; }
+  .frame-wrap{ width:340px; }
+  .frame-label{ font-family:'Inter'; font-weight:700; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#7FA3A1; margin:0 0 10px 4px; display:flex; align-items:center; gap:8px; }
+  .frame-label .n{ background:var(--primary-deep); color:white; width:20px;height:20px; border-radius:50%; display:flex;align-items:center;justify-content:center; font-size:11px; }
+
+  .phone{
+    width:340px; height:712px; background:var(--bg);
+    border-radius:42px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.55), 0 0 0 10px #050c0d, 0 0 0 11px #1D3338;
+    overflow:hidden; position:relative; display:flex; flex-direction:column;
+  }
+  .statusbar{ height:46px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 28px; font-size:13px; font-weight:700; color:var(--ink); }
+  .screen{ flex:1; overflow-y:auto; display:flex; flex-direction:column; position:relative; }
+  .screen::-webkit-scrollbar{ display:none; }
+  .px{ padding-left:22px; padding-right:22px; }
+
+  /* botões no estilo da Variante 3: raio 16px, sólido, sombra colorida com a cor do próprio botão */
+  .btn{
+    border:none; border-radius:16px; font-family:'Inter'; font-weight:700; font-size:15px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+    transition: transform .15s ease;
+  }
+  .btn:active{ transform: scale(0.97); }
+  .btn-primary{
+    background: var(--primary);
+    color:#06292E;
+    padding:16px 20px;
+    box-shadow: 0 8px 20px rgba(91,175,196,0.28);
+  }
+  .btn-secondary{
+    background: var(--surface-2);
+    color: var(--primary);
+    border:1px solid var(--line);
+    padding:16px 20px;
+  }
+  .btn-ghost{ background:transparent; color: var(--ink-soft); padding:10px 14px; }
+
+  .card{ background:var(--surface); border-radius:var(--radius-md); border:1px solid var(--line); }
+
+  .pill{
+    border-radius:999px; font-size:13px; font-weight:600; padding:9px 16px;
+    border:1px solid var(--line); background:var(--surface-2); color:var(--ink-soft);
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .pill.active{ background:var(--primary); border-color:var(--primary); color:#06292E; }
+
+  .chip{ border-radius:12px; background:var(--surface-2); padding:10px 14px; font-size:13px; font-weight:600; color:var(--ink-soft); border:1px solid var(--line); }
+  .chip.sel{ background:var(--green-tint); border-color:var(--green-deep); color:var(--green); }
+
+  .input{ width:100%; border:1px solid var(--line); border-radius:14px; padding:13px 14px; font-family:'Inter'; font-size:14px; color:var(--ink); background:var(--surface-2); }
+
+  .bottomnav{ flex-shrink:0; display:flex; justify-content:space-around; align-items:center; padding:10px 8px 14px; background:var(--surface); border-top:1px solid var(--line); }
+  .navitem{ display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--muted); font-size:11px; font-weight:600; }
+  .navitem.active{ color:var(--primary); }
+  .navitem svg{ width:22px; height:22px; }
+
+  .field-label{ font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:8px; display:block; }
+
+  /* anel de confiança, no padrão visual do modelo original, em verde sobre fundo escuro */
+  .ringwrap{ position:relative; width:52px; height:52px; flex-shrink:0; }
+  .ringwrap svg{ width:52px; height:52px; transform:rotate(-90deg); }
+  .ringwrap .avatar{ position:absolute; top:4px; left:4px; width:44px; height:44px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-family:'Fraunces'; font-weight:600; color:var(--primary); font-size:16px; }
+
+  .ai-card{ background: linear-gradient(135deg, #16282C 0%, #1D3338 100%); border-radius:16px; padding:14px; border:1px solid var(--line); }
+  .ai-card .ai-tag{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:0.04em; color:var(--primary); text-transform:uppercase; margin-bottom:6px; }
+
+  .header-page{ text-align:center; padding:56px 0 8px; color:#EAF3F2; }
+  .header-page h1{ font-size:34px; margin:0 0 10px; }
+  .header-page p{ font-family:'Inter'; color:#7FA3A1; font-size:15px; max-width:640px; margin:0 auto; }
+
+  .annot{ margin-top:14px; background:#0E1B1D; border:1px solid #27403F; border-radius:14px; padding:14px 16px; font-size:12.5px; color:#C3DAD8; line-height:1.55; }
+  .annot b{ color:#EAF3F2; }
+</style>
+</head>
+<body>
+
+<div class="header-page">
+  <h1 class="display">Variante 6 — Híbrida Dark Petróleo</h1>
+  <p>Base e tipografia do modelo original (Fraunces + Inter, anel de confiança), formato de botão da Variante 3, e a paleta original azul-petróleo + verde — agora em modo escuro. Inclui Buscar, Agenda e Perfil pela barra inferior, com a tela de resultados mesclada num único componente reutilizável.</p>
+</div>
+
+<div class="gallery">
+
+  <!-- 1. HOME -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">1</span> Tela inicial</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+
+      <div class="screen px" style="padding-top:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+          <div>
+            <div style="font-size:13px; color:var(--muted); font-weight:600;">Boa tarde,</div>
+            <div class="display" style="font-size:21px;">Marina</div>
+          </div>
+          <div style="width:42px;height:42px;border-radius:50%;background:var(--surface-2); display:flex;align-items:center;justify-content:center; border:1px solid var(--line);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M12 21s-7-4.35-9.5-8.5C.7 9 2 5 6 5c2 0 3.5 1.2 4 2 .5-.8 2-2 4-2 4 0 5.3 4 3.5 7.5C19 16.65 12 21 12 21z"/></svg>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%; padding:18px; margin-bottom:12px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06292E" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+          Marcar consulta
+        </button>
+        <button class="btn btn-secondary" style="width:100%; padding:18px; margin-bottom:22px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          Buscar médicos ou clínicas
+        </button>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Especialidades em destaque</div>
+        <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; margin-bottom:20px;">
+          <div class="card" style="min-width:78px; padding:14px 10px; text-align:center; flex-shrink:0;">
+            <div style="font-size:24px; margin-bottom:6px;">🩺</div>
+            <div style="font-size:11.5px; font-weight:600;">Clínico</div>
+          </div>
+          <div class="card" style="min-width:78px; padding:14px 10px; text-align:center; flex-shrink:0;">
+            <div style="font-size:24px; margin-bottom:6px;">🦴</div>
+            <div style="font-size:11.5px; font-weight:600;">Ortopedia</div>
+          </div>
+          <div class="card" style="min-width:78px; padding:14px 10px; text-align:center; flex-shrink:0;">
+            <div style="font-size:24px; margin-bottom:6px;">👶</div>
+            <div style="font-size:11.5px; font-weight:600;">Pediatria</div>
+          </div>
+          <div class="card" style="min-width:78px; padding:14px 10px; text-align:center; flex-shrink:0;">
+            <div style="font-size:24px; margin-bottom:6px;">🦷</div>
+            <div style="font-size:11.5px; font-weight:600;">Dentista</div>
+          </div>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Sua próxima consulta</div>
+        <div class="card" style="padding:16px; display:flex; gap:12px; align-items:center;">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--green-tint); display:flex;align-items:center;justify-content:center; flex-shrink:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6FCBA0" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:700; font-size:14px;">Dra. Helena Souza</div>
+            <div class="num" style="font-size:12.5px; color:var(--muted);">Cardiologia · Qui, 26 jun · 14:30</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#93B0AE" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+
+      <div class="bottomnav">
+        <div class="navitem active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Buscar</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Agenda</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil</div>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> mesmo layout e hierarquia do modelo original — só os tons inverteram. O azul petróleo e o verde continuam carregando os mesmos significados (ação primária / confirmação), agora clareados o suficiente para ler bem no escuro.</div>
+  </div>
+
+  <!-- 2. FICHA -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">2</span> Ficha pré-consulta</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; padding:4px 22px 10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EAF3F2" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        <div style="font-weight:700; font-size:15px;">Ficha pré-consulta</div>
+      </div>
+      <div style="height:6px; background:var(--surface-2); border-radius:99px; margin:0 22px 6px;">
+        <div style="width:50%; height:100%; background:var(--green); border-radius:99px;"></div>
+      </div>
+      <div style="font-size:12px; color:var(--muted); padding:0 22px 14px;">Etapa 2 de 4 · Sintomas</div>
+
+      <div class="screen px" style="padding-top:0;">
+        <h2 style="font-size:18px; margin:0 0 4px;">O que você está sentindo?</h2>
+        <p style="font-size:13px; color:var(--muted); margin:0 0 18px; line-height:1.5;">Toque em todos os sintomas que se aplicam. Isso ajuda o médico a se preparar antes da consulta.</p>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;">
+          <div class="chip sel">Dor de cabeça ✓</div>
+          <div class="chip">Febre</div>
+          <div class="chip sel">Cansaço ✓</div>
+          <div class="chip">Tosse</div>
+          <div class="chip">Dor no corpo</div>
+          <div class="chip">Náusea</div>
+        </div>
+
+        <label class="field-label">Há quanto tempo sente isso?</label>
+        <div style="display:flex; gap:8px; margin-bottom:22px;">
+          <div class="chip" style="flex:1; text-align:center;">Hoje</div>
+          <div class="chip sel" style="flex:1; text-align:center;">2–3 dias</div>
+          <div class="chip" style="flex:1; text-align:center;">1 semana+</div>
+        </div>
+
+        <label class="field-label">Intensidade do desconforto</label>
+        <div class="card" style="padding:18px 16px; margin-bottom:22px;">
+          <input type="range" min="0" max="10" value="6" style="width:100%; accent-color:#5BAFC4;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:4px;">
+            <span>Leve</span>
+            <span style="font-weight:700; color:var(--primary);" class="num">Moderada — 6/10</span>
+            <span>Forte</span>
+          </div>
+        </div>
+
+        <label class="field-label">Histórico básico (opcional)</label>
+        <div class="card" style="padding:14px 16px;">
+          <textarea class="input" style="border:none; padding:0; resize:none; height:54px; background:transparent;" placeholder="Ex: alergias, condições anteriores, medicamentos em uso..."></textarea>
+        </div>
+      </div>
+
+      <div style="padding:14px 22px 20px; background:var(--bg); border-top:1px solid var(--line);">
+        <button class="btn btn-primary" style="width:100%;">Continuar</button>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> barra de progresso em verde sobre fundo escuro funciona como ponto de luz que guia o olho — reforça avanço sem precisar de texto extra.</div>
+  </div>
+
+  <!-- 3. BUSCAR -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">3</span> Buscar / Resultados</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+
+      <div class="px" style="padding-top:4px; padding-bottom:12px;">
+        <div class="display" style="font-size:21px; margin-bottom:12px;">Buscar</div>
+        <div class="card" style="padding:13px 14px; display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span style="color:var(--ink); font-size:14px; font-weight:600;">Cardiologista</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" style="margin-left:auto;"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div class="pill active" style="padding:7px 12px; font-size:12px;">⭐ 4.5+</div>
+          <div class="pill" style="padding:7px 12px; font-size:12px;">8 km</div>
+          <div class="pill" style="padding:7px 12px; font-size:12px;">Unimed</div>
+        </div>
+      </div>
+
+      <div class="screen px" style="padding-top:4px;">
+        <div style="font-size:12px; color:var(--muted); margin-bottom:10px;">24 resultados encontrados</div>
+
+        <div class="card" style="padding:14px; margin-bottom:12px;">
+          <div style="display:flex; gap:12px;">
+            <div class="ringwrap">
+              <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="#27403F" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="#6FCBA0" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="14.45" stroke-linecap="round"/></svg>
+              <div class="avatar">HS</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:14.5px;">Dra. Helena Souza</div>
+              <div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Cardiologia</div>
+              <div class="num" style="font-size:13px; font-weight:700; color:var(--amber);">★ 4.8 <span style="color:var(--muted); font-weight:400;">(312)</span></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:14px; margin:12px 0; font-size:12.5px; color:var(--ink-soft);">
+            <span>📍 1.8 km</span><span>🩺 Unimed</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 220</span>
+          </div>
+          <button class="btn btn-primary" style="width:100%; padding:11px;">Agendar</button>
+        </div>
+
+        <div class="card" style="padding:14px; margin-bottom:12px;">
+          <div style="display:flex; gap:12px;">
+            <div class="ringwrap">
+              <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="#27403F" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="#6FCBA0" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="20" stroke-linecap="round"/></svg>
+              <div class="avatar">RC</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:14.5px;">Dr. Ricardo Campos</div>
+              <div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Cardiologia · Clínica Vitalis</div>
+              <div class="num" style="font-size:13px; font-weight:700; color:var(--amber);">★ 4.6 <span style="color:var(--muted); font-weight:400;">(189)</span></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:14px; margin:12px 0; font-size:12.5px; color:var(--ink-soft);">
+            <span>📍 3.2 km</span><span>🩺 Unimed</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 280</span>
+          </div>
+          <button class="btn btn-primary" style="width:100%; padding:11px;">Agendar</button>
+        </div>
+
+        <div class="card" style="padding:14px;">
+          <div style="display:flex; gap:12px;">
+            <div class="ringwrap">
+              <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="#27403F" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="#6FCBA0" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="29" stroke-linecap="round"/></svg>
+              <div class="avatar">FL</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:14.5px;">Dra. Flávia Lemos</div>
+              <div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Cardiologia</div>
+              <div class="num" style="font-size:13px; font-weight:700; color:var(--amber);">★ 4.5 <span style="color:var(--muted); font-weight:400;">(97)</span></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:14px; margin:12px 0; font-size:12.5px; color:var(--ink-soft);">
+            <span>📍 4.5 km</span><span>🩺 Unimed</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 190</span>
+          </div>
+          <button class="btn btn-primary" style="width:100%; padding:11px;">Agendar</button>
+        </div>
+      </div>
+
+      <div class="bottomnav">
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+        <div class="navitem active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Buscar</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Agenda</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil</div>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> essa tela serve dois caminhos ao mesmo tempo — chegar pela aba "Buscar" da nav (ponto de entrada, com o campo de texto editável) ou cair aqui depois de buscar algo pela home. Por isso a tela 7 da versão anterior foi removida: era a mesma lista de resultados repetida, só com o cabeçalho mudando entre "voltar + título fixo" e "campo de busca". Manter as duas só duplicava o componente sem agregar uma decisão de design nova.</div>
+  </div>
+
+  <!-- 4. AVALIAÇÃO COM IA -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">4</span> Avaliação com IA</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:4px 22px 14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EAF3F2" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        <div style="font-weight:700; font-size:15px;">Perfil do médico</div>
+      </div>
+
+      <div class="screen px" style="padding-top:0;">
+        <div style="display:flex; gap:14px; align-items:center; margin-bottom:18px;">
+          <div class="ringwrap" style="width:72px; height:72px;">
+            <svg viewBox="0 0 52 52" style="width:72px; height:72px;"><circle cx="26" cy="26" r="23" fill="none" stroke="#27403F" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="#6FCBA0" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="14.45" stroke-linecap="round"/></svg>
+            <div class="avatar" style="width:62px; height:62px; top:5px; left:5px; font-size:22px;">HS</div>
+          </div>
+          <div>
+            <div class="display" style="font-weight:600; font-size:18px;">Dra. Helena Souza</div>
+            <div style="font-size:13px; color:var(--muted);">Cardiologia · CRM 84512-SP</div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+              <span class="num" style="font-weight:700; font-size:13px; color:var(--amber);">★ 4.8</span>
+              <span style="font-size:12px; color:var(--muted);">· 312 avaliações</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-card" style="margin-bottom:14px;">
+          <div class="ai-tag">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M12 3v3M12 18v3M5 12H2M22 12h-3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+            Resumo gerado por IA
+          </div>
+          <p style="margin:0; font-size:14px; line-height:1.5; color:var(--ink);">Pacientes elogiam a atenção da médica e a clareza nas explicações durante a consulta.</p>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">O que dizem os pacientes</div>
+
+        <div style="display:flex; gap:10px; align-items:flex-start; background:var(--green-tint); border:1px solid rgba(111,203,160,0.25); border-radius:14px; padding:13px; margin-bottom:10px;">
+          <span style="font-size:16px;">👍</span>
+          <span style="font-size:13.5px; color:var(--green); font-weight:600;">Muitos elogios ao atendimento e à pontualidade</span>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-start; background:var(--amber-tint); border:1px solid rgba(232,162,61,0.25); border-radius:14px; padding:13px; margin-bottom:18px;">
+          <span style="font-size:16px;">⏱️</span>
+          <span style="font-size:13.5px; color:var(--amber); font-weight:600;">Alguns relatos de espera maior na sala de espera</span>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Sobre</div>
+        <p style="font-size:13.5px; color:var(--ink-soft); line-height:1.6;">15 anos de experiência em cardiologia clínica e preventiva. Atende em consultório próprio e pela Clínica Vitalis.</p>
+      </div>
+
+      <div style="padding:14px 22px 20px; background:var(--bg); border-top:1px solid var(--line);">
+        <button class="btn btn-primary" style="width:100%;">Agendar consulta</button>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> o card de IA usa um leve degradê entre os dois tons de superfície escura — destaca-se do resto sem precisar de uma cor nova, mantendo a paleta de duas cores do briefing.</div>
+  </div>
+
+  <!-- 5. AGENDAMENTO -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">5</span> Agendamento</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:4px 22px 14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EAF3F2" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        <div style="font-weight:700; font-size:15px;">Agendar consulta</div>
+      </div>
+
+      <div class="screen px" style="padding-top:0;">
+        <div class="card" style="padding:14px; display:flex; gap:12px; align-items:center; margin-bottom:20px;">
+          <div style="width:44px; height:44px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-family:'Fraunces'; font-weight:600; color:var(--primary); font-size:15px;">HS</div>
+          <div>
+            <div style="font-weight:700; font-size:14px;">Dra. Helena Souza</div>
+            <div style="font-size:12px; color:var(--muted);">Cardiologia · Consultório Jardins</div>
+          </div>
+        </div>
+
+        <label class="field-label">Escolha o dia</label>
+        <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:6px; margin-bottom:20px;">
+          <div style="min-width:54px; text-align:center; padding:10px 0; border-radius:14px; background:var(--surface-2); border:1px solid var(--line); flex-shrink:0;">
+            <div style="font-size:11px; color:var(--muted);">QUA</div>
+            <div style="font-weight:700; font-size:15px;">25</div>
+          </div>
+          <div style="min-width:54px; text-align:center; padding:10px 0; border-radius:14px; background:var(--primary); color:#06292E; flex-shrink:0;">
+            <div style="font-size:11px; opacity:0.8;">QUI</div>
+            <div style="font-weight:700; font-size:15px;">26</div>
+          </div>
+          <div style="min-width:54px; text-align:center; padding:10px 0; border-radius:14px; background:var(--surface-2); border:1px solid var(--line); flex-shrink:0;">
+            <div style="font-size:11px; color:var(--muted);">SEX</div>
+            <div style="font-weight:700; font-size:15px;">27</div>
+          </div>
+          <div style="min-width:54px; text-align:center; padding:10px 0; border-radius:14px; background:var(--surface-2); border:1px solid var(--line); flex-shrink:0;">
+            <div style="font-size:11px; color:var(--muted);">SAB</div>
+            <div style="font-weight:700; font-size:15px;">28</div>
+          </div>
+        </div>
+
+        <label class="field-label">Horários disponíveis — qui, 26 jun</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:22px;">
+          <div class="chip" style="text-align:center;">09:00</div>
+          <div class="chip" style="text-align:center;">10:30</div>
+          <div class="chip" style="text-align:center; opacity:0.4; text-decoration:line-through;">11:00</div>
+          <div class="chip" style="text-align:center;">13:00</div>
+          <div class="chip sel" style="text-align:center;">14:30</div>
+          <div class="chip" style="text-align:center;">16:00</div>
+        </div>
+
+        <div class="card" style="padding:16px;">
+          <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Resumo</div>
+          <div style="display:flex; justify-content:space-between; font-size:13.5px; margin-bottom:6px;"><span style="color:var(--muted);">Data</span><span style="font-weight:600;">Qui, 26 de junho</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:13.5px; margin-bottom:6px;"><span style="color:var(--muted);">Horário</span><span style="font-weight:600;">14:30</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:13.5px; margin-bottom:6px;"><span style="color:var(--muted);">Convênio</span><span style="font-weight:600;">Unimed</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:13.5px;"><span style="color:var(--muted);">Valor</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 220</span></div>
+        </div>
+      </div>
+
+      <div style="padding:14px 22px 20px; background:var(--bg); border-top:1px solid var(--line);">
+        <button class="btn btn-primary" style="width:100%;">Confirmar consulta</button>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> dia selecionado preenchido em azul-petróleo claro com texto escuro — mantém o mesmo padrão de "preenchido = selecionado" do modelo original, só trocando o tom de superfície.</div>
+  </div>
+
+  <!-- 6. CONFIRMAÇÃO -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">6</span> Confirmação</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+
+      <div class="screen px" style="align-items:center; justify-content:center; text-align:center; padding-top:0;">
+        <div style="width:88px; height:88px; border-radius:50%; background:var(--green-tint); border:1px solid rgba(111,203,160,0.25); display:flex; align-items:center; justify-content:center; margin-bottom:22px;">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#6FCBA0" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h2 style="font-size:22px; margin-bottom:8px;">Consulta confirmada!</h2>
+        <p style="font-size:14px; color:var(--ink-soft); margin-bottom:28px; line-height:1.5;">Sua ficha pré-consulta já foi enviada<br>para a Dra. Helena Souza.</p>
+
+        <div class="card" style="width:100%; padding:18px; text-align:left; margin-bottom:24px;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; padding-bottom:14px; border-bottom:1px dashed var(--line);">
+            <div style="width:42px; height:42px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-family:'Fraunces'; font-weight:600; color:var(--primary); font-size:14px;">HS</div>
+            <div>
+              <div style="font-weight:700; font-size:14px;">Dra. Helena Souza</div>
+              <div style="font-size:12px; color:var(--muted);">Cardiologia</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+            <span style="font-size:13.5px; font-weight:600;">Qui, 26 de junho · 14:30</span>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:13.5px; font-weight:600;">Consultório Jardins, São Paulo</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%; margin-bottom:10px;">Adicionar ao calendário</button>
+        <button class="btn btn-ghost" style="width:100%;">Voltar ao início</button>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> o ícone de confirmação em verde-claro sobre fundo verde transparente cria contraste suave o suficiente para não "gritar" em modo escuro, mas ainda assim ser claramente positivo.</div>
+  </div>
+
+  <!-- 7. AGENDA (nav) -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">7</span> Agenda (aba da nav)</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+
+      <div class="px" style="padding-top:4px; padding-bottom:14px;">
+        <div class="display" style="font-size:21px; margin-bottom:14px;">Agenda</div>
+        <div style="display:flex; gap:8px;">
+          <div class="pill active" style="padding:7px 14px; font-size:12px;">Próximas</div>
+          <div class="pill" style="padding:7px 14px; font-size:12px;">Anteriores</div>
+        </div>
+      </div>
+
+      <div class="screen px" style="padding-top:4px;">
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Hoje</div>
+        <div class="card" style="padding:16px; margin-bottom:16px; border-left:3px solid var(--primary);">
+          <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+            <div style="width:42px;height:42px;border-radius:50%;background:var(--surface-2); display:flex;align-items:center;justify-content:center; font-family:'Fraunces'; font-weight:600; color:var(--primary); font-size:14px;">HS</div>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:14.5px;">Dra. Helena Souza</div>
+              <div style="font-size:12px; color:var(--muted);">Cardiologia</div>
+            </div>
+            <div style="background:var(--green-tint); color:var(--green); font-size:11px; font-weight:700; padding:4px 9px; border-radius:99px;">Confirmada</div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+            <span class="num" style="font-size:13.5px; font-weight:600;">Hoje · 14:30</span>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-size:13.5px; font-weight:600;">Consultório Jardins</span>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" style="flex:1; padding:11px; font-size:13.5px;">Ver detalhes</button>
+            <button class="btn btn-secondary" style="flex:1; padding:11px; font-size:13.5px;">Remarcar</button>
+          </div>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Próxima semana</div>
+        <div class="card" style="padding:14px; display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+          <div style="width:46px;height:46px;border-radius:12px;background:var(--surface-2); display:flex;flex-direction:column;align-items:center;justify-content:center; flex-shrink:0;">
+            <span style="font-size:10px; color:var(--muted); font-weight:700;">JUL</span>
+            <span style="font-size:15px; font-weight:800; color:var(--ink);">02</span>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:700; font-size:14px;">Dr. Ricardo Campos</div>
+            <div class="num" style="font-size:12.5px; color:var(--muted);">Cardiologia · 10:00</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px; margin-top:8px;">Realizadas</div>
+        <div class="card" style="padding:14px; display:flex; gap:12px; align-items:center; opacity:0.65;">
+          <div style="width:46px;height:46px;border-radius:12px;background:var(--surface-2); display:flex;align-items:center;justify-content:center; flex-shrink:0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6FCBA0" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:700; font-size:14px;">Dra. Flávia Lemos</div>
+            <div class="num" style="font-size:12.5px; color:var(--muted);">Cardiologia · 12 jun</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottomnav">
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Buscar</div>
+        <div class="navitem active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Agenda</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil</div>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> central de consultas do paciente — "Hoje" em destaque com borda na cor primária e ações diretas, depois próximas datas e histórico esmaecido. É diferente da tela de "marcar horário" (frame 5), que continua acessível pelo botão "Marcar consulta" na home.</div>
+  </div>
+
+  <!-- 8. PERFIL (nav) -->
+  <div class="frame-wrap">
+    <div class="frame-label"><span class="n">8</span> Perfil (aba da nav)</div>
+    <div class="phone">
+      <div class="statusbar">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#EAF3F2"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#EAF3F2"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#EAF3F2"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke="#EAF3F2"/><rect x="2" y="2" width="10" height="6" rx="1" fill="#EAF3F2"/></svg>
+        </div>
+      </div>
+
+      <div class="screen px" style="padding-top:6px;">
+        <div class="display" style="font-size:21px; margin-bottom:18px;">Perfil</div>
+
+        <div style="display:flex; align-items:center; gap:14px; margin-bottom:22px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--surface-2); display:flex;align-items:center;justify-content:center; font-family:'Fraunces'; font-weight:600; color:var(--primary); font-size:22px;">M</div>
+          <div style="flex:1;">
+            <div style="font-weight:700; font-size:17px;">Marina Andrade</div>
+            <div style="font-size:13px; color:var(--muted);">marina.andrade@email.com</div>
+          </div>
+          <button class="btn btn-ghost" style="padding:8px 12px; font-size:12.5px; border:1px solid var(--line); border-radius:10px;">Editar</button>
+        </div>
+
+        <div class="card" style="padding:16px; display:flex; margin-bottom:22px;">
+          <div style="flex:1; text-align:center; border-right:1px solid var(--line);">
+            <div class="num" style="font-size:18px; font-weight:800; color:var(--primary);">12</div>
+            <div style="font-size:11.5px; color:var(--muted); font-weight:600;">Consultas</div>
+          </div>
+          <div style="flex:1; text-align:center; border-right:1px solid var(--line);">
+            <div class="num" style="font-size:18px; font-weight:800; color:var(--primary);">3</div>
+            <div style="font-size:11.5px; color:var(--muted); font-weight:600;">Favoritos</div>
+          </div>
+          <div style="flex:1; text-align:center;">
+            <div style="font-size:18px;">🩺</div>
+            <div style="font-size:11.5px; color:var(--muted); font-weight:600;">Unimed</div>
+          </div>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Conta</div>
+        <div class="card" style="padding:4px 14px; margin-bottom:20px;">
+          <div style="display:flex; align-items:center; gap:12px; padding:14px 2px; border-bottom:1px solid var(--line);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            <span style="flex:1;">Dados pessoais</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:14px 2px; border-bottom:1px solid var(--line);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M19 14c1.5-1.5 2-3 2-5a9 9 0 10-18 0c0 2 .5 3.5 2 5l5 6 5-6z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            <span style="flex:1;">Convênio e endereços</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:14px 2px; border-bottom:1px solid var(--line);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20"/></svg>
+            <span style="flex:1;">Pagamento</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:14px 2px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M9 5H6a2 2 0 00-2 2v10a2 2 0 002 2h3M16 17l5-5-5-5M21 12H9"/></svg>
+            <span style="flex:1;">Histórico médico</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Preferências</div>
+        <div class="card" style="padding:4px 14px; margin-bottom:20px;">
+          <div style="display:flex; align-items:center; gap:12px; padding:14px 2px; border-bottom:1px solid var(--line);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+            <span style="flex:1;">Notificações</span>
+            <div style="width:42px; height:24px; border-radius:99px; position:relative; background:var(--primary);">
+              <div style="position:absolute; top:3px; left:21px; width:18px; height:18px; border-radius:50%; background:#06292E;"></div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:14px 2px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 109.8 9.8z"/></svg>
+            <span style="flex:1;">Tema escuro</span>
+            <div style="width:42px; height:24px; border-radius:99px; position:relative; background:var(--primary);">
+              <div style="position:absolute; top:3px; left:21px; width:18px; height:18px; border-radius:50%; background:#06292E;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:10px;">Suporte</div>
+        <div class="card" style="padding:4px 14px; margin-bottom:18px;">
+          <div style="display:flex; align-items:center; gap:12px; padding:14px 2px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5BAFC4" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 1.5-2 2-2.5 3.5M12 17h.01"/></svg>
+            <span style="flex:1;">Ajuda e contato</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+
+        <button class="btn btn-ghost" style="width:100%; justify-content:center; margin-bottom:8px; color:#E5876B; font-weight:700;">Sair da conta</button>
+      </div>
+
+      <div class="bottomnav">
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Início</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Buscar</div>
+        <div class="navitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Agenda</div>
+        <div class="navitem active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil</div>
+      </div>
+    </div>
+    <div class="annot"><b>Por quê:</b> essa tela ainda não existia (só havia "Perfil do médico", frame 4). Aqui é o perfil do próprio paciente: identidade, atalhos numéricos, três blocos de menu e botão discreto de sair no fim — seguindo os mesmos cards, ícones e raios da variante.</div>
+  </div>
+
+</div>
+
+</body>
+</html>
