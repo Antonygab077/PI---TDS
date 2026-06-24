@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuidar — Web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ===== TEMA CLARO (padrão) ===== */
+  :root, [data-theme="light"] {
+    --bg: #F4F8FB;
+    --body-bg: #F4F8FB;
+    --surface: #FFFFFF;
+    --surface-2: #EAF1F6;
+    --ink: #11242B;
+    --ink-soft: #4C636B;
+    --muted: #87999E;
+    --line: #D9E6ED;
+    --primary: #2D6E7E;
+    --primary-deep: #1F4F5C;
+    --primary-tint: #E6F0F2;
+    --green: #4D9D7C;
+    --green-deep: #3D7E63;
+    --green-tint: #E6F3EC;
+    --amber: #C8862E;
+    --amber-tint: #FBF0DE;
+    --btn-primary-text: #FFFFFF;
+    --ai-card-bg: linear-gradient(135deg, #EDF6F4 0%, #E6F0F2 100%);
+    --ai-card-border: #D7E8E4;
+    --avatar-bg: var(--primary-tint);
+    --avatar-text: var(--primary-deep);
+    --ring-track: #D9E6ED;
+    --danger: #C0533A;
+    --shadow-card: 0 2px 10px rgba(45,110,126,0.06);
+    --shadow-btn: 0 8px 20px rgba(45,110,126,0.22);
+    --toggle-knob: #fff;
+  }
+
+  /* ===== TEMA ESCURO ===== */
+  [data-theme="dark"] {
+    --bg: #0F1E21;
+    --body-bg: #081316;
+    --surface: #16282C;
+    --surface-2: #1D3338;
+    --ink: #EAF3F2;
+    --ink-soft: #C3DAD8;
+    --muted: #93B0AE;
+    --line: #27403F;
+    --primary: #5BAFC4;
+    --primary-deep: #2D6E7E;
+    --primary-tint: rgba(91,175,196,0.12);
+    --green: #6FCBA0;
+    --green-deep: #5FAD8C;
+    --green-tint: rgba(111,203,160,0.12);
+    --amber: #E8A23D;
+    --amber-tint: rgba(232,162,61,0.12);
+    --btn-primary-text: #06292E;
+    --ai-card-bg: linear-gradient(135deg, #16282C 0%, #1D3338 100%);
+    --ai-card-border: #27403F;
+    --avatar-bg: var(--surface-2);
+    --avatar-text: var(--primary);
+    --ring-track: #27403F;
+    --danger: #E5876B;
+    --shadow-card: 0 2px 16px rgba(0,0,0,0.28);
+    --shadow-btn: 0 8px 20px rgba(91,175,196,0.22);
+    --toggle-knob: #06292E;
+  }
+
+  /* ===== RESET ===== */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--body-bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    transition: background .3s ease, color .3s ease;
+  }
+  h1, h2, h3, .display { font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+  .num { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; }
+
+  /* ===== VARIÁVEIS LAYOUT ===== */
+  :root {
+    --radius-lg: 22px;
+    --radius-md: 16px;
+    --on-primary: var(--btn-primary-text);
+    --sidebar-w: 248px;
+    --content-max: 1180px;
+  }
+
+  /* ===== APP SHELL ===== */
+  .app { min-height: 100vh; display: flex; }
+
+  /* ===== SIDEBAR (desktop) ===== */
+  .sidebar {
+    display: none;
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    padding: 28px 18px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex-direction: column;
+    transition: background .3s, border-color .3s;
+  }
+  .sidebar .brand { display: flex; align-items: center; gap: 10px; padding: 0 10px; margin-bottom: 32px; }
+  .sidebar .brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: var(--btn-primary-text); font-family: 'Fraunces'; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+  .sidebar .brand-name { font-family: 'Fraunces'; font-weight: 600; font-size: 18px; }
+
+  .sidebar nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .sidebar-link {
+    display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 12px;
+    font-size: 14.5px; font-weight: 600; color: var(--ink-soft); cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .sidebar-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .sidebar-link:hover { background: var(--surface-2); color: var(--ink); }
+  .sidebar-link.active { background: var(--primary-tint); color: var(--primary); }
+
+  .sidebar-footer { border-top: 1px solid var(--line); padding-top: 14px; margin-top: 14px; }
+  .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; cursor: pointer; }
+  .sidebar-user:hover { background: var(--surface-2); }
+  .sidebar-user .av { width: 34px; height: 34px; border-radius: 50%; background: var(--primary-tint); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces'; font-weight: 600; color: var(--primary-deep); font-size: 13px; flex-shrink: 0; }
+  .sidebar-user .name { font-size: 13.5px; font-weight: 700; }
+  .sidebar-user .email { font-size: 11.5px; color: var(--muted); }
+
+  /* ===== TOPBAR (mobile) ===== */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; background: var(--surface); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 20;
+    transition: background .3s, border-color .3s;
+  }
+  .topbar .brand { display: flex; align-items: center; gap: 8px; }
+  .topbar .brand-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: var(--btn-primary-text); font-family: 'Fraunces'; font-weight: 700; font-size: 13px; }
+  .topbar .brand-name { font-family: 'Fraunces'; font-weight: 600; font-size: 16px; }
+  .topbar .av { width: 32px; height: 32px; border-radius: 50%; background: var(--primary-tint); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces'; font-weight: 600; color: var(--primary-deep); font-size: 13px; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  /* ===== THEME TOGGLE BUTTON ===== */
+  .theme-toggle-btn {
+    width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface-2); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background .2s, border-color .2s; flex-shrink: 0;
+  }
+  .theme-toggle-btn:hover { background: var(--primary-tint); }
+  .theme-toggle-btn svg { width: 18px; height: 18px; }
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+  [data-theme="dark"] .icon-sun { display: block; }
+  [data-theme="dark"] .icon-moon { display: none; }
+
+  /* Sidebar theme toggle */
+  .sidebar-theme-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px;
+    cursor: pointer; color: var(--ink-soft); font-size: 14px; font-weight: 600;
+    transition: background .15s;
+  }
+  .sidebar-theme-row:hover { background: var(--surface-2); }
+  .sidebar-theme-row svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* ===== MAIN COLUMN ===== */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .content { flex: 1; width: 100%; max-width: var(--content-max); margin: 0 auto; padding: 20px 18px 100px; }
+
+  /* ===== BOTTOM NAV (mobile) ===== */
+  .bottomnav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 9px 8px calc(10px + env(safe-area-inset-bottom));
+    background: var(--surface); border-top: 1px solid var(--line);
+    transition: background .3s, border-color .3s;
+  }
+  .navitem {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--muted); font-size: 11px; font-weight: 600;
+    background: none; border: none; cursor: pointer; padding: 4px 10px;
+    transition: color .15s;
+  }
+  .navitem.active { color: var(--primary); }
+  .navitem svg { width: 22px; height: 22px; }
+
+  /* ===== SHARED COMPONENTS ===== */
+  .btn {
+    border: none; border-radius: 16px; font-family: 'Inter'; font-weight: 700;
+    font-size: 15px; cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 8px; transition: transform .15s ease, background .2s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--primary); color: var(--btn-primary-text); padding: 14px 22px; box-shadow: var(--shadow-btn); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-secondary { background: var(--surface-2); color: var(--primary); border: 1px solid var(--line); padding: 14px 22px; }
+  .btn-secondary:hover { filter: brightness(0.97); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); padding: 10px 14px; }
+
+  .card {
+    background: var(--surface); border-radius: var(--radius-md);
+    border: 1px solid var(--line); box-shadow: var(--shadow-card);
+    transition: background .3s, border-color .3s;
+  }
+
+  .pill {
+    border-radius: 999px; font-size: 13px; font-weight: 600; padding: 9px 16px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;
+    transition: background .15s;
+  }
+  .pill.active { background: var(--primary); border-color: var(--primary); color: var(--btn-primary-text); }
+
+  .chip {
+    border-radius: 12px; background: var(--surface); padding: 10px 14px;
+    font-size: 13px; font-weight: 600; color: var(--ink-soft);
+    border: 1px solid var(--line); cursor: pointer; text-align: center;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  [data-theme="dark"] .chip { background: var(--surface-2); }
+  .chip.sel { background: var(--green-tint); border-color: var(--green-deep); color: var(--green); }
+
+  .input {
+    width: 100%; border: 1px solid var(--line); border-radius: 14px;
+    padding: 13px 14px; font-family: 'Inter'; font-size: 14px;
+    color: var(--ink); background: var(--surface);
+    transition: background .3s, border-color .3s, color .3s;
+  }
+  [data-theme="dark"] .input { background: var(--surface-2); }
+
+  .field-label { font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 8px; display: block; }
+  .section-title { font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  .ringwrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+  .ringwrap svg { width: 52px; height: 52px; transform: rotate(-90deg); }
+  .ringwrap .avatar {
+    position: absolute; top: 4px; left: 4px; width: 44px; height: 44px;
+    border-radius: 50%; background: var(--avatar-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces'; font-weight: 600; color: var(--avatar-text); font-size: 16px;
+  }
+
+  .ai-card { background: var(--ai-card-bg); border-radius: 16px; padding: 16px; border: 1px solid var(--ai-card-border); }
+  .ai-card .ai-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; }
+
+  .page-title { font-size: 24px; margin-bottom: 4px; }
+  .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
+
+  .menurow { display: flex; align-items: center; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--line); }
+  .menurow:last-child { border-bottom: none; }
+  .menurow svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* Toggle switch */
+  .toggle { width: 42px; height: 24px; border-radius: 99px; position: relative; flex-shrink: 0; cursor: pointer; transition: background .2s; }
+  .toggle.on { background: var(--primary); }
+  .toggle.off { background: var(--surface-2); border: 1px solid var(--line); }
+  .toggle .knob { position: absolute; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--toggle-knob); transition: left .15s; box-shadow: 0 1px 4px rgba(0,0,0,0.18); }
+  .toggle.on .knob { left: 21px; }
+  .toggle.off .knob { left: 3px; }
+
+  /* Screen panels */
+  .screen-panel { display: none; }
+  .screen-panel.active { display: block; animation: fadein .18s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Grids */
+  .grid-2 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .split { display: flex; flex-direction: column; gap: 24px; }
+
+  .hscroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+  .hscroll::-webkit-scrollbar { height: 6px; }
+  .hscroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 99px; }
+
+  .doc-card { padding: 16px; display: flex; gap: 12px; align-items: center; }
+  .doc-card .info { flex: 1; min-width: 0; }
+  .doc-card .meta { display: flex; gap: 14px; margin: 10px 0; font-size: 12.5px; color: var(--ink-soft); flex-wrap: wrap; }
+
+  /* Subscreen / detail panel */
+  .detail-back {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+    color: var(--ink-soft); font-size: 14px; font-weight: 600; cursor: pointer;
+    background: none; border: none; padding: 0;
+  }
+  .detail-back:hover { color: var(--primary); }
+  .detail-back svg { width: 20px; height: 20px; }
+
+  /* Confirmation screen */
+  .confirm-circle {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--green-tint); border: 1px solid rgba(77,157,124,0.25);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 22px;
+  }
+  [data-theme="dark"] .confirm-circle { border-color: rgba(111,203,160,0.25); }
+
+  /* Tablet */
+  @media (min-width: 720px) {
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .sidebar { display: flex; }
+    .topbar { display: none; }
+    .bottomnav { display: none; }
+    .content { padding: 36px 40px 56px; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .split { flex-direction: row; align-items: flex-start; }
+    .split > .split-main { flex: 1; min-width: 0; }
+    .split > .split-side { width: 340px; flex-shrink: 0; }
+    .page-title { font-size: 28px; }
+  }
+
+  @media (min-width: 1280px) {
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== SIDEBAR (desktop) ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div class="brand-name">Cuidar</div>
+    </div>
+    <nav>
+      <div class="sidebar-link active" data-nav="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        Início
+      </div>
+      <div class="sidebar-link" data-nav="buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Buscar
+      </div>
+      <div class="sidebar-link" data-nav="agenda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+        Agenda
+      </div>
+      <div class="sidebar-link" data-nav="perfil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Perfil
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-theme-row" id="theme-toggle-sidebar">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 109.8 9.8z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <span id="theme-label-sidebar">Tema escuro</span>
+      </div>
+      <div class="sidebar-user" data-nav="perfil">
+        <div class="av">M</div>
+        <div>
+          <div class="name">Marina Andrade</div>
+          <div class="email">Unimed</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN COLUMN ===== -->
+  <div class="main">
+
+    <!-- Mobile topbar -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">Cuidar</div>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle-btn" id="theme-toggle-topbar" aria-label="Alternar tema">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 109.8 9.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <div class="av" data-nav="perfil" style="cursor:pointer;">M</div>
+      </div>
+    </div>
+
+    <div class="content" id="content">
+
+      <!-- ===== HOME ===== -->
+      <section class="screen-panel active" id="screen-home">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px;">
+          <div>
+            <div style="font-size:13px; color:var(--muted); font-weight:600;">Boa tarde,</div>
+            <h1 class="display" style="font-size:26px;">Marina</h1>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="split-main">
+            <div class="grid-2" style="margin-bottom:24px;">
+              <button class="btn btn-primary" style="width:100%; padding:18px;" data-nav="agendamento">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+                Marcar consulta
+              </button>
+              <button class="btn btn-secondary" style="width:100%; padding:18px;" data-nav="buscar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                Buscar médicos
+              </button>
+            </div>
+
+            <div class="section-title">Especialidades em destaque</div>
+            <div class="hscroll" style="margin-bottom:26px;">
+              <div class="card" style="min-width:96px; padding:16px 10px; text-align:center; flex-shrink:0; cursor:pointer;">
+                <div style="font-size:26px; margin-bottom:6px;">🩺</div>
+                <div style="font-size:12px; font-weight:600;">Clínico</div>
+              </div>
+              <div class="card" style="min-width:96px; padding:16px 10px; text-align:center; flex-shrink:0; cursor:pointer;">
+                <div style="font-size:26px; margin-bottom:6px;">❤️</div>
+                <div style="font-size:12px; font-weight:600;">Cardiologia</div>
+              </div>
+              <div class="card" style="min-width:96px; padding:16px 10px; text-align:center; flex-shrink:0; cursor:pointer;">
+                <div style="font-size:26px; margin-bottom:6px;">🦴</div>
+                <div style="font-size:12px; font-weight:600;">Ortopedia</div>
+              </div>
+              <div class="card" style="min-width:96px; padding:16px 10px; text-align:center; flex-shrink:0; cursor:pointer;">
+                <div style="font-size:26px; margin-bottom:6px;">👶</div>
+                <div style="font-size:12px; font-weight:600;">Pediatria</div>
+              </div>
+              <div class="card" style="min-width:96px; padding:16px 10px; text-align:center; flex-shrink:0; cursor:pointer;">
+                <div style="font-size:26px; margin-bottom:6px;">🦷</div>
+                <div style="font-size:12px; font-weight:600;">Dentista</div>
+              </div>
+              <div class="card" style="min-width:96px; padding:16px 10px; text-align:center; flex-shrink:0; cursor:pointer;">
+                <div style="font-size:26px; margin-bottom:6px;">🧠</div>
+                <div style="font-size:12px; font-weight:600;">Neurologia</div>
+              </div>
+            </div>
+
+            <div class="section-title">Especialistas recomendados</div>
+            <div class="grid-2">
+              <div class="card doc-card" style="cursor:pointer;" data-nav="avaliacao">
+                <div class="ringwrap">
+                  <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--ring-track)" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="14.45" stroke-linecap="round"/></svg>
+                  <div class="avatar">HS</div>
+                </div>
+                <div class="info">
+                  <div style="font-weight:700; font-size:14.5px;">Dra. Helena Souza</div>
+                  <div style="font-size:12.5px; color:var(--muted);">Cardiologia · ★ 4.8</div>
+                </div>
+              </div>
+              <div class="card doc-card" style="cursor:pointer;" data-nav="avaliacao">
+                <div class="ringwrap">
+                  <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--ring-track)" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="20" stroke-linecap="round"/></svg>
+                  <div class="avatar">RC</div>
+                </div>
+                <div class="info">
+                  <div style="font-weight:700; font-size:14.5px;">Dr. Ricardo Campos</div>
+                  <div style="font-size:12.5px; color:var(--muted);">Cardiologia · ★ 4.6</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="split-side">
+            <div class="section-title">Sua próxima consulta</div>
+            <div class="card" style="padding:18px; border-left:3px solid var(--primary); margin-bottom:18px;">
+              <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px;">
+                <div style="width:46px;height:46px;border-radius:12px;background:var(--green-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:700; font-size:14.5px;">Dra. Helena Souza</div>
+                  <div class="num" style="font-size:12.5px; color:var(--muted);">Cardiologia · Qui, 26 jun · 14:30</div>
+                </div>
+              </div>
+              <button class="btn btn-secondary" style="width:100%; padding:11px; font-size:13.5px;" data-nav="agenda">Ver agenda</button>
+            </div>
+
+            <div class="section-title">Convênio</div>
+            <div class="card" style="padding:16px; display:flex; align-items:center; gap:12px;">
+              <div style="font-size:22px;">🩺</div>
+              <div>
+                <div style="font-weight:700; font-size:14px;">Unimed</div>
+                <div style="font-size:12px; color:var(--muted);">Plano ativo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FICHA PRÉ-CONSULTA ===== -->
+      <section class="screen-panel" id="screen-agendamento">
+        <div class="split">
+          <div class="split-main" style="max-width:640px;">
+            <h1 class="page-title">Ficha pré-consulta</h1>
+            <p class="page-sub">Etapa 2 de 4 · Sintomas</p>
+            <div style="height:6px; background:var(--surface-2); border-radius:99px; margin-bottom:28px; max-width:340px;">
+              <div style="width:50%; height:100%; background:var(--green); border-radius:99px;"></div>
+            </div>
+
+            <h2 style="font-size:18px; margin:0 0 6px;">O que você está sentindo?</h2>
+            <p style="font-size:13.5px; color:var(--muted); margin:0 0 18px; line-height:1.5;">Toque em todos os sintomas que se aplicam. Isso ajuda o médico a se preparar antes da consulta.</p>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;">
+              <div class="chip sel">Dor de cabeça ✓</div>
+              <div class="chip">Febre</div>
+              <div class="chip sel">Cansaço ✓</div>
+              <div class="chip">Tosse</div>
+              <div class="chip">Dor no corpo</div>
+              <div class="chip">Náusea</div>
+              <div class="chip">Falta de ar</div>
+              <div class="chip">Tontura</div>
+            </div>
+
+            <label class="field-label">Há quanto tempo sente isso?</label>
+            <div class="grid-3" style="margin-bottom:26px; max-width:420px;">
+              <div class="chip">Hoje</div>
+              <div class="chip sel">2–3 dias</div>
+              <div class="chip">1 semana+</div>
+            </div>
+
+            <label class="field-label">Intensidade do desconforto</label>
+            <div class="card" style="padding:20px 18px; margin-bottom:26px; max-width:420px;">
+              <input type="range" min="0" max="10" value="6" style="width:100%; accent-color:var(--primary);">
+              <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:4px;">
+                <span>Leve</span>
+                <span style="font-weight:700; color:var(--primary);" class="num">Moderada — 6/10</span>
+                <span>Forte</span>
+              </div>
+            </div>
+
+            <label class="field-label">Histórico básico (opcional)</label>
+            <div class="card" style="padding:14px 16px; margin-bottom:28px; max-width:480px;">
+              <textarea class="input" style="border:none; padding:0; resize:none; height:64px; background:transparent; color:var(--ink);" placeholder="Ex: alergias, condições anteriores, medicamentos em uso..."></textarea>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; max-width:280px;" data-nav="confirmacao">Continuar</button>
+          </div>
+
+          <div class="split-side">
+            <div class="card" style="padding:18px;">
+              <div class="section-title" style="margin-bottom:14px;">Etapas da ficha</div>
+              <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px; opacity:0.55;">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">✓</div>
+                <span style="font-size:13.5px; font-weight:600;">Dados básicos</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px;">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);color:var(--btn-primary-text);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">2</div>
+                <span style="font-size:13.5px; font-weight:700;">Sintomas</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center; margin-bottom:14px; opacity:0.45;">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">3</div>
+                <span style="font-size:13.5px; font-weight:600;">Histórico</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center; opacity:0.45;">
+                <div style="width:24px;height:24px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">4</div>
+                <span style="font-size:13.5px; font-weight:600;">Revisão</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BUSCAR / RESULTADOS ===== -->
+      <section class="screen-panel" id="screen-buscar">
+        <h1 class="page-title">Buscar</h1>
+        <p class="page-sub">24 resultados encontrados</p>
+
+        <div class="card" style="padding:13px 16px; display:flex; align-items:center; gap:10px; margin-bottom:16px; max-width:520px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" value="Cardiologista" style="border:none; background:transparent; font-family:'Inter'; font-size:14px; font-weight:600; color:var(--ink); flex:1; outline:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" style="cursor:pointer;"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;">
+          <div class="pill active">⭐ 4.5+</div>
+          <div class="pill">8 km</div>
+          <div class="pill">Unimed</div>
+          <div class="pill">Disponível hoje</div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card doc-card" style="flex-direction:column; align-items:stretch; text-align:left;">
+            <div style="display:flex; gap:12px;">
+              <div class="ringwrap">
+                <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--ring-track)" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="14.45" stroke-linecap="round"/></svg>
+                <div class="avatar">HS</div>
+              </div>
+              <div class="info">
+                <div style="font-weight:700; font-size:14.5px;">Dra. Helena Souza</div>
+                <div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Cardiologia</div>
+                <div class="num" style="font-size:13px; font-weight:700; color:var(--amber);">★ 4.8 <span style="color:var(--muted); font-weight:400;">(312)</span></div>
+              </div>
+            </div>
+            <div class="meta"><span>📍 1.8 km</span><span>🩺 Unimed</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 220</span></div>
+            <button class="btn btn-primary" style="width:100%; padding:11px;" data-nav="avaliacao">Ver perfil</button>
+          </div>
+
+          <div class="card doc-card" style="flex-direction:column; align-items:stretch; text-align:left;">
+            <div style="display:flex; gap:12px;">
+              <div class="ringwrap">
+                <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--ring-track)" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="20" stroke-linecap="round"/></svg>
+                <div class="avatar">RC</div>
+              </div>
+              <div class="info">
+                <div style="font-weight:700; font-size:14.5px;">Dr. Ricardo Campos</div>
+                <div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Cardiologia · Clínica Vitalis</div>
+                <div class="num" style="font-size:13px; font-weight:700; color:var(--amber);">★ 4.6 <span style="color:var(--muted); font-weight:400;">(189)</span></div>
+              </div>
+            </div>
+            <div class="meta"><span>📍 3.2 km</span><span>🩺 Unimed</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 280</span></div>
+            <button class="btn btn-primary" style="width:100%; padding:11px;" data-nav="avaliacao">Ver perfil</button>
+          </div>
+
+          <div class="card doc-card" style="flex-direction:column; align-items:stretch; text-align:left;">
+            <div style="display:flex; gap:12px;">
+              <div class="ringwrap">
+                <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--ring-track)" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="29" stroke-linecap="round"/></svg>
+                <div class="avatar">FL</div>
+              </div>
+              <div class="info">
+                <div style="font-weight:700; font-size:14.5px;">Dra. Flávia Lemos</div>
+                <div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Cardiologia</div>
+                <div class="num" style="font-size:13px; font-weight:700; color:var(--amber);">★ 4.5 <span style="color:var(--muted); font-weight:400;">(97)</span></div>
+              </div>
+            </div>
+            <div class="meta"><span>📍 4.5 km</span><span>🩺 Unimed</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 190</span></div>
+            <button class="btn btn-primary" style="width:100%; padding:11px;" data-nav="avaliacao">Ver perfil</button>
+          </div>
+
+          <div class="card doc-card" style="flex-direction:column; align-items:stretch; text-align:left;">
+            <div style="display:flex; gap:12px;">
+              <div class="ringwrap">
+                <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--ring-track)" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="22" stroke-linecap="round"/></svg>
+                <div class="avatar">MB</div>
+              </div>
+              <div class="info">
+                <div style="font-weight:700; font-size:14.5px;">Dr. Marcos Borba</div>
+                <div style="font-size:12.5px; color:var(--muted); margin-bottom:4px;">Cardiologia · Hospital Einstein</div>
+                <div class="num" style="font-size:13px; font-weight:700; color:var(--amber);">★ 4.7 <span style="color:var(--muted); font-weight:400;">(241)</span></div>
+              </div>
+            </div>
+            <div class="meta"><span>📍 6.1 km</span><span>🩺 Bradesco</span><span class="num" style="font-weight:700; color:var(--primary);">R$ 350</span></div>
+            <button class="btn btn-primary" style="width:100%; padding:11px;" data-nav="avaliacao">Ver perfil</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AVALIAÇÃO COM IA ===== -->
+      <section class="screen-panel" id="screen-avaliacao">
+        <button class="detail-back" data-nav="buscar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          Voltar aos resultados
+        </button>
+
+        <div class="split">
+          <div class="split-main">
+            <div style="display:flex; gap:16px; align-items:center; margin-bottom:24px;">
+              <div class="ringwrap" style="width:72px; height:72px;">
+                <svg viewBox="0 0 52 52" style="width:72px; height:72px;"><circle cx="26" cy="26" r="23" fill="none" stroke="var(--ring-track)" stroke-width="4"/><circle cx="26" cy="26" r="23" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="144.5" stroke-dashoffset="14.45" stroke-linecap="round"/></svg>
+                <div class="avatar" style="width:62px; height:62px; top:5px; left:5px; font-size:22px;">HS</div>
+              </div>
+              <div>
+                <h1 class="display" style="font-size:22px;">Dra. Helena Souza</h1>
+                <div style="font-size:13px; color:var(--muted); margin-top:2px;">Cardiologia · CRM 84512-SP</div>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                  <span class="num" style="font-weight:700; font-size:14px; color:var(--amber);">★ 4.8</span>
+                  <span style="font-size:12px; color:var(--muted);">· 312 avaliações</span>
+                  <span style="font-size:12px; color:var(--muted);">· 📍 1.8 km</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-card" style="margin-bottom:20px;">
+              <div class="ai-tag">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M5 12H2M22 12h-3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+                Resumo gerado por IA
+              </div>
+              <p style="margin:0; font-size:14px; line-height:1.55; color:var(--ink);">Pacientes elogiam a atenção da médica e a clareza nas explicações durante a consulta. Alta taxa de satisfação, especialmente em consultas preventivas e acompanhamento de longo prazo.</p>
+            </div>
+
+            <div class="section-title" style="margin-bottom:12px;">O que dizem os pacientes</div>
+            <div style="display:flex; gap:10px; align-items:flex-start; background:var(--green-tint); border:1px solid rgba(77,157,124,0.2); border-radius:14px; padding:13px; margin-bottom:10px;">
+              <span style="font-size:16px;">👍</span>
+              <span style="font-size:13.5px; color:var(--green); font-weight:600;">Muitos elogios ao atendimento e à pontualidade</span>
+            </div>
+            <div style="display:flex; gap:10px; align-items:flex-start; background:var(--amber-tint); border:1px solid rgba(200,134,46,0.2); border-radius:14px; padding:13px; margin-bottom:24px;">
+              <span style="font-size:16px;">⏱️</span>
+              <span style="font-size:13.5px; color:var(--amber); font-weight:600;">Alguns relatos de espera maior na sala de espera</span>
+            </div>
+
+            <div class="section-title" style="margin-bottom:10px;">Sobre</div>
+            <p style="font-size:13.5px; color:var(--ink-soft); line-height:1.65; margin:0 0 24px;">15 anos de experiência em cardiologia clínica e preventiva. Especialista em hipertensão arterial e insuficiência cardíaca. Atende em consultório próprio e pela Clínica Vitalis.</p>
+
+            <button class="btn btn-primary" style="width:100%; max-width:320px;" data-nav="horarios">Agendar consulta</button>
+          </div>
+
+          <div class="split-side">
+            <div class="card" style="padding:18px; margin-bottom:16px;">
+              <div class="section-title" style="margin-bottom:14px;">Informações</div>
+              <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span style="font-size:13.5px; color:var(--ink-soft);">Consultório Jardins, São Paulo</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20"/></svg>
+                <span style="font-size:13.5px; color:var(--ink-soft);">Unimed · Bradesco · Particular</span>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+                <span style="font-size:13.5px; color:var(--ink-soft);">Disponível hoje</span>
+              </div>
+            </div>
+
+            <div class="card" style="padding:18px;">
+              <div class="section-title" style="margin-bottom:14px;">Valores</div>
+              <div style="display:flex; justify-content:space-between; font-size:13.5px; margin-bottom:8px;">
+                <span style="color:var(--muted);">Consulta particular</span>
+                <span class="num" style="font-weight:700; color:var(--primary);">R$ 220</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:13.5px;">
+                <span style="color:var(--muted);">Via convênio</span>
+                <span style="font-weight:600; color:var(--green);">Coberto</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HORÁRIOS / AGENDAMENTO ===== -->
+      <section class="screen-panel" id="screen-horarios">
+        <button class="detail-back" data-nav="avaliacao">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          Voltar ao perfil
+        </button>
+
+        <h1 class="page-title">Agendar consulta</h1>
+
+        <div class="split">
+          <div class="split-main" style="max-width:560px;">
+            <div class="card" style="padding:14px; display:flex; gap:12px; align-items:center; margin-bottom:24px;">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--avatar-bg);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:600;color:var(--avatar-text);font-size:15px;">HS</div>
+              <div>
+                <div style="font-weight:700; font-size:14px;">Dra. Helena Souza</div>
+                <div style="font-size:12px; color:var(--muted);">Cardiologia · Consultório Jardins</div>
+              </div>
+            </div>
+
+            <label class="field-label">Escolha o dia</label>
+            <div class="hscroll" style="margin-bottom:24px;">
+              <div style="min-width:58px;text-align:center;padding:11px 0;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);flex-shrink:0;">
+                <div style="font-size:11px;color:var(--muted);">QUA</div>
+                <div style="font-weight:700;font-size:15px;">25</div>
+              </div>
+              <div style="min-width:58px;text-align:center;padding:11px 0;border-radius:14px;background:var(--primary);color:var(--btn-primary-text);flex-shrink:0;">
+                <div style="font-size:11px;opacity:0.8;">QUI</div>
+                <div style="font-weight:700;font-size:15px;">26</div>
+              </div>
+              <div style="min-width:58px;text-align:center;padding:11px 0;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);flex-shrink:0;">
+                <div style="font-size:11px;color:var(--muted);">SEX</div>
+                <div style="font-weight:700;font-size:15px;">27</div>
+              </div>
+              <div style="min-width:58px;text-align:center;padding:11px 0;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);flex-shrink:0;">
+                <div style="font-size:11px;color:var(--muted);">SAB</div>
+                <div style="font-weight:700;font-size:15px;">28</div>
+              </div>
+              <div style="min-width:58px;text-align:center;padding:11px 0;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);flex-shrink:0;">
+                <div style="font-size:11px;color:var(--muted);">SEG</div>
+                <div style="font-weight:700;font-size:15px;">30</div>
+              </div>
+              <div style="min-width:58px;text-align:center;padding:11px 0;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);flex-shrink:0;">
+                <div style="font-size:11px;color:var(--muted);">TER</div>
+                <div style="font-weight:700;font-size:15px;">01</div>
+              </div>
+            </div>
+
+            <label class="field-label">Horários disponíveis — qui, 26 jun</label>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:24px; max-width:360px;">
+              <div class="chip" style="text-align:center;">09:00</div>
+              <div class="chip" style="text-align:center;">10:30</div>
+              <div class="chip" style="text-align:center; opacity:0.4; text-decoration:line-through; cursor:not-allowed;">11:00</div>
+              <div class="chip" style="text-align:center;">13:00</div>
+              <div class="chip sel" style="text-align:center;">14:30</div>
+              <div class="chip" style="text-align:center;">16:00</div>
+            </div>
+
+            <div class="card" style="padding:18px; margin-bottom:24px;">
+              <div class="section-title" style="margin-bottom:14px;">Resumo</div>
+              <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:8px;"><span style="color:var(--muted);">Data</span><span style="font-weight:600;">Qui, 26 de junho</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:8px;"><span style="color:var(--muted);">Horário</span><span style="font-weight:600;" class="num">14:30</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:8px;"><span style="color:var(--muted);">Convênio</span><span style="font-weight:600;">Unimed</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13.5px;"><span style="color:var(--muted);">Valor</span><span class="num" style="font-weight:700;color:var(--primary);">R$ 220</span></div>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;" data-nav="confirmacao">Confirmar consulta</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CONFIRMAÇÃO ===== -->
+      <section class="screen-panel" id="screen-confirmacao">
+        <div style="max-width:480px; margin:0 auto; text-align:center; padding-top:24px;">
+          <div class="confirm-circle">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h1 class="display" style="font-size:26px; margin-bottom:8px;">Consulta confirmada!</h1>
+          <p style="font-size:14px; color:var(--ink-soft); margin:0 0 28px; line-height:1.55;">Sua ficha pré-consulta já foi enviada para a Dra. Helena Souza. Você receberá um lembrete 24h antes.</p>
+
+          <div class="card" style="text-align:left; padding:20px; margin-bottom:24px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px dashed var(--line);">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--avatar-bg);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:600;color:var(--avatar-text);font-size:14px;">HS</div>
+              <div>
+                <div style="font-weight:700;font-size:14px;">Dra. Helena Souza</div>
+                <div style="font-size:12px;color:var(--muted);">Cardiologia</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+              <span style="font-size:13.5px;font-weight:600;" class="num">Qui, 26 de junho · 14:30</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span style="font-size:13.5px;font-weight:600;">Consultório Jardins, São Paulo</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%; margin-bottom:10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+            Adicionar ao calendário
+          </button>
+          <button class="btn btn-ghost" style="width:100%;" data-nav="home">Voltar ao início</button>
+        </div>
+      </section>
+
+      <!-- ===== AGENDA ===== -->
+      <section class="screen-panel" id="screen-agenda">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+          <h1 class="page-title" style="margin:0;">Agenda</h1>
+          <button class="btn btn-primary" style="padding:10px 16px; font-size:13px;" data-nav="agendamento">+ Nova consulta</button>
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:24px;">
+          <div class="pill active">Próximas</div>
+          <div class="pill">Anteriores</div>
+        </div>
+
+        <div class="split">
+          <div class="split-main">
+            <div class="section-title">Hoje</div>
+            <div class="card" style="padding:18px; margin-bottom:18px; border-left:3px solid var(--primary);">
+              <div style="display:flex; gap:12px; align-items:center; margin-bottom:14px;">
+                <div style="width:44px;height:44px;border-radius:50%;background:var(--avatar-bg);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:600;color:var(--avatar-text);font-size:14px;">HS</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:14.5px;">Dra. Helena Souza</div>
+                  <div style="font-size:12px;color:var(--muted);">Cardiologia</div>
+                </div>
+                <div style="background:var(--green-tint);color:var(--green);font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;">Confirmada</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+                <span class="num" style="font-size:13.5px;font-weight:600;">Hoje · 14:30</span>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span style="font-size:13.5px;font-weight:600;">Consultório Jardins</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-primary" style="flex:1;padding:11px;font-size:13.5px;" data-nav="avaliacao">Ver detalhes</button>
+                <button class="btn btn-secondary" style="flex:1;padding:11px;font-size:13.5px;">Remarcar</button>
+              </div>
+            </div>
+
+            <div class="section-title">Próxima semana</div>
+            <div class="card" style="padding:16px; display:flex; gap:12px; align-items:center; margin-bottom:14px; cursor:pointer;" data-nav="avaliacao">
+              <div style="width:48px;height:48px;border-radius:12px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line);">
+                <span style="font-size:10px;color:var(--muted);font-weight:700;">JUL</span>
+                <span style="font-size:15px;font-weight:800;color:var(--ink);">02</span>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:14px;">Dr. Ricardo Campos</div>
+                <div class="num" style="font-size:12.5px;color:var(--muted);">Cardiologia · 10:00</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <div class="split-side">
+            <div class="section-title">Realizadas</div>
+            <div class="card" style="padding:16px; display:flex; gap:12px; align-items:center; opacity:0.65; margin-bottom:14px;">
+              <div style="width:48px;height:48px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:14px;">Dra. Flávia Lemos</div>
+                <div class="num" style="font-size:12.5px;color:var(--muted);">Cardiologia · 12 jun</div>
+              </div>
+            </div>
+            <div class="card" style="padding:16px; display:flex; gap:12px; align-items:center; opacity:0.65;">
+              <div style="width:48px;height:48px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:14px;">Dr. Ricardo Campos</div>
+                <div class="num" style="font-size:12.5px;color:var(--muted);">Cardiologia · 03 mai</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PERFIL ===== -->
+      <section class="screen-panel" id="screen-perfil">
+        <h1 class="page-title" style="margin-bottom:22px;">Perfil</h1>
+
+        <div class="split">
+          <div class="split-main" style="max-width:600px;">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--primary-tint);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:600;color:var(--primary);font-size:24px;">M</div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:18px;">Marina Andrade</div>
+                <div style="font-size:13px;color:var(--muted);">marina.andrade@email.com</div>
+              </div>
+              <button class="btn btn-secondary" style="padding:10px 16px;font-size:13px;border-radius:12px;">Editar</button>
+            </div>
+
+            <div class="card" style="padding:16px;display:flex;margin-bottom:24px;">
+              <div style="flex:1;text-align:center;border-right:1px solid var(--line);">
+                <div class="num" style="font-size:20px;font-weight:800;color:var(--primary);">12</div>
+                <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px;">Consultas</div>
+              </div>
+              <div style="flex:1;text-align:center;border-right:1px solid var(--line);">
+                <div class="num" style="font-size:20px;font-weight:800;color:var(--primary);">3</div>
+                <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px;">Favoritos</div>
+              </div>
+              <div style="flex:1;text-align:center;">
+                <div style="font-size:20px;">🩺</div>
+                <div style="font-size:12px;color:var(--muted);font-weight:600;margin-top:2px;">Unimed</div>
+              </div>
+            </div>
+
+            <div class="section-title">Conta</div>
+            <div class="card" style="padding:4px 16px;margin-bottom:22px;">
+              <div class="menurow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                <span style="flex:1;">Dados pessoais</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="menurow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M19 14c1.5-1.5 2-3 2-5a9 9 0 10-18 0c0 2 .5 3.5 2 5l5 6 5-6z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                <span style="flex:1;">Convênio e endereços</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="menurow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20"/></svg>
+                <span style="flex:1;">Pagamento</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="menurow" style="border-bottom:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M9 5H6a2 2 0 00-2 2v10a2 2 0 002 2h3M16 17l5-5-5-5M21 12H9"/></svg>
+                <span style="flex:1;">Histórico médico</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            </div>
+
+            <div class="section-title">Preferências</div>
+            <div class="card" style="padding:4px 16px;margin-bottom:22px;">
+              <div class="menurow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+                <span style="flex:1;">Notificações</span>
+                <div class="toggle on"><div class="knob"></div></div>
+              </div>
+              <div class="menurow" style="border-bottom:none; cursor:pointer;" id="theme-toggle-perfil">
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 109.8 9.8z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                <span id="theme-label-perfil" style="flex:1;">Tema escuro</span>
+                <div class="toggle off" id="dark-toggle-perfil"><div class="knob"></div></div>
+              </div>
+            </div>
+
+            <div class="section-title">Suporte</div>
+            <div class="card" style="padding:4px 16px;margin-bottom:24px;">
+              <div class="menurow" style="border-bottom:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 0c0 1.5-2 2-2.5 3.5M12 17h.01"/></svg>
+                <span style="flex:1;">Ajuda e contato</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            </div>
+
+            <button class="btn btn-ghost" style="font-size:14px; font-weight:700; color:var(--danger); padding:12px 0;">Sair da conta</button>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /content -->
+
+    <!-- Mobile bottom nav -->
+    <div class="bottomnav">
+      <button class="navitem active" data-nav="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        Início
+      </button>
+      <button class="navitem" data-nav="buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Buscar
+      </button>
+      <button class="navitem" data-nav="agenda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+        Agenda
+      </button>
+      <button class="navitem" data-nav="perfil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        Perfil
+      </button>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+  // ===== NAVIGATION =====
+  const NAV_ITEMS = ['home', 'buscar', 'agenda', 'perfil'];
+  const DETAIL_SCREENS = ['avaliacao', 'horarios', 'confirmacao', 'agendamento'];
+
+  function navigate(target) {
+    // Update nav highlights (only for main tabs)
+    if (NAV_ITEMS.includes(target)) {
+      document.querySelectorAll('[data-nav]').forEach(n => {
+        if (NAV_ITEMS.includes(n.getAttribute('data-nav'))) {
+          n.classList.toggle('active', n.getAttribute('data-nav') === target);
+        }
+      });
+    }
+
+    // Show panel
+    document.querySelectorAll('.screen-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('screen-' + target);
+    if (panel) panel.classList.add('active');
+    document.getElementById('content').scrollIntoView({ behavior: 'instant', block: 'start' });
+    window.scrollTo(0, 0);
+  }
+
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    el.addEventListener('click', () => {
+      navigate(el.getAttribute('data-nav'));
+    });
+  });
+
+  // ===== THEME TOGGLE =====
+  function getTheme() {
+    return localStorage.getItem('cuidar-theme') || 'light';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('cuidar-theme', theme);
+
+    // Update toggle in perfil screen
+    const darkToggle = document.getElementById('dark-toggle-perfil');
+    if (darkToggle) {
+      darkToggle.classList.toggle('on', theme === 'dark');
+      darkToggle.classList.toggle('off', theme === 'light');
+    }
+    // Update labels
+    const isDark = theme === 'dark';
+    ['theme-label-perfil', 'theme-label-sidebar'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = isDark ? 'Tema claro' : 'Tema escuro';
+    });
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'light' ? 'dark' : 'light');
+  }
+
+  // Attach toggle to all three toggle points
+  ['theme-toggle-topbar', 'theme-toggle-sidebar', 'theme-toggle-perfil'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', toggleTheme);
+  });
+
+  // Init theme
+  applyTheme(getTheme());
+
+  // Chip interactivity
+  document.querySelectorAll('.chip').forEach(chip => {
+    if (chip.style.cursor !== 'not-allowed') {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('sel');
+        if (chip.classList.contains('sel') && !chip.textContent.endsWith('✓')) {
+          chip.textContent = chip.textContent.trim() + ' ✓';
+        } else if (!chip.classList.contains('sel')) {
+          chip.textContent = chip.textContent.replace(' ✓', '').trim();
+        }
+      });
+    }
+  });
+
+  // Pill filter interactivity
+  document.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const group = pill.closest('div');
+      if (group) {
+        group.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      }
+      pill.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
